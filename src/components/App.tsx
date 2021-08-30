@@ -1,6 +1,4 @@
 import { useState } from "react";
-import "../App.css";
-import "../reset.css";
 import createId from "../createId";
 
 function App() {
@@ -99,23 +97,26 @@ function App() {
   }
 
   return (
-    <div className="todo-app-container">
-      <div className="todo-app">
-        <h2>Todo App</h2>
+    <div className="min-height-screen bg-gray-100 p-3">
+      <div className="todo-app mx-auto my-auto mt-8 p-4 bg-white text-gray-800 max-w-lg rounded shadow-md">
+        <h2 className="text-lg font-bold">Todo App</h2>
         <form onSubmit={addTodo}>
           <input
+            type="text"
+            className="w-full shadow-sm rounded mt-4 p-3"
+            placeholder="What do you need to do?"
             value={todoInput}
             onChange={handleChange}
-            type="text"
-            className="todo-input"
-            placeholder="What do you need to do?"
           />
         </form>
 
-        <ul className="todo-list">
-          {todos.map((todo, index) => (
-            <li className="todo-item-container" key={todo.id}>
-              <div className="todo-item">
+        <ul className="mt-8">
+          {todos.map((todo) => (
+            <li
+              className="flex justify-between items-center mt-6"
+              key={todo.id}
+            >
+              <div className="flex flex-1 items-center text-lg mr-6">
                 <input
                   type="checkbox"
                   checked={todo.isComplete}
@@ -124,7 +125,7 @@ function App() {
                 {!todo.isEditing && (
                   <span
                     onDoubleClick={() => markAsEditing(todo.id)}
-                    className={`todo-item-label ${
+                    className={`ml-4 ${
                       todo.isComplete ? "line-through" : null
                     }`}
                   >
@@ -134,6 +135,9 @@ function App() {
 
                 {todo.isEditing && (
                   <input
+                    type="text"
+                    className="ml-2 w-full py-1 px-2 text-lg shadow-sm rounded"
+                    autoFocus
                     defaultValue={todo.title}
                     onBlur={(event) => updateTodo(event, todo.id)}
                     onKeyDown={(event) => {
@@ -144,15 +148,15 @@ function App() {
                         markAsEditing(todo.id);
                       }
                     }}
-                    type="text"
-                    className="todo-item-input"
-                    autoFocus
                   />
                 )}
               </div>
-              <button onClick={() => deleteTodo(todo.id)} className="x-button">
+              <button
+                onClick={() => deleteTodo(todo.id)}
+                className="bg-white text-gray-600 hover:text-gray-900 cursor-pointer border-0"
+              >
                 <svg
-                  className="x-button-icon"
+                  className="w-6 h-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -169,15 +173,15 @@ function App() {
           ))}
         </ul>
 
-        <div className="buttons-container">
+        <div className="flex justify-between items-center text-gray-800 mt-6 pt-4 border-solid border-t border-gray-300">
           {todos.length !== 0 && (
-            <div className="check-all-container">
-              <div className="button" onClick={checkAll}>
+            <div className="flex flex-col space-y-2">
+              <button className="btn-neutral" onClick={checkAll}>
                 Check All
-              </div>
-              <div className="button" onClick={uncheckAll}>
+              </button>
+              <button className="btn-neutral" onClick={uncheckAll}>
                 Uncheck All
-              </div>
+              </button>
             </div>
           )}
 
@@ -186,16 +190,14 @@ function App() {
           </span>
         </div>
 
-        <div className="other-buttons-container">
+        <div className="flex justify-between items-center mt-6 pt-4 border-solid border-t border-gray-300">
           <div>
-            <button className="button filter-button filter-button-active">
-              All
-            </button>
-            <button className="button filter-button">Active</button>
-            <button className="button filter-button">Completed</button>
+            <button className="btn-neutral">All</button>
+            <button className="btn-neutral border-0">Active</button>
+            <button className="btn-neutral border-0">Completed</button>
           </div>
           <div>
-            <button className="button" onClick={clearCompleted}>
+            <button className="btn-neutral" onClick={clearCompleted}>
               Clear completed
             </button>
           </div>
