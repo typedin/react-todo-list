@@ -10,7 +10,7 @@ import UncheckAllTodos from "./UncheckAllTodos";
 import ClearCompletedTodos from "./ClearCompletedTodos";
 
 function App() {
-  const [todos, setTodos] = useState([
+  const [todos, setTodos] = useState<Array<Todo>>([
     {
       id: 1,
       title: "Finish react series",
@@ -21,12 +21,12 @@ function App() {
     { id: 3, title: "Do other thing", isComplete: false, isEditing: false },
   ]);
 
-  function addTodo(todo: string): void {
-    const newTodo = {
-      id: createId(todos.map(({ id }) => id)),
-      title: todo,
-      isComplete: false,
+  function addTodo(newTodoTitle: string): void {
+    const newTodo: Todo = {
       isEditing: false,
+      isComplete: false,
+      title: newTodoTitle,
+      id: createId(todos.map(({ id }) => id)),
     };
     setTodos([...todos, newTodo]);
   }

@@ -1,5 +1,7 @@
 /// <reference types="react-scripts" />
-interface Thing {
-  name: string;
-  blob?: string;
+interface Todo {
+  id: number;
+  title: string;
+  isComplete: boolean;
+  isEditing: boolean;
 }
