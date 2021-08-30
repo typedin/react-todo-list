@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn-neutral {
+    color: #6B7280;
+    font-size: 14px;
+    background: white;
+    border: 1px solid lightgray;
+    padding: 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-neutral:hover {
+    border: 1px solid lightgray;
+  }
+  .btn-filter {
+
+  }
+}
+
