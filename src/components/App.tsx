@@ -1,5 +1,13 @@
 import { useState } from "react";
 import createId from "../createId";
+import NoTodos from "./NoTodos";
+import TodoList from "./TodoList";
+import TodoForm from "./TodoForm";
+import TodoFilters from "./TodoFilters";
+import TodoRemaining from "./TodoRemaining";
+import CheckAllTodos from "./CheckAllTodos";
+import UncheckAllTodos from "./UncheckAllTodos";
+import ClearCompletedTodos from "./ClearCompletedTodos";
 
 function App() {
   const [todos, setTodos] = useState([
@@ -13,22 +21,14 @@ function App() {
     { id: 3, title: "Do other thing", isComplete: false, isEditing: false },
   ]);
 
-  const [todoInput, setTodoInput] = useState("");
-
-  function addTodo(event: any): void {
-    event.preventDefault();
-    if (todoInput.trim().length === 0) {
-      return;
-    }
-
+  function addTodo(todo: string): void {
     const newTodo = {
       id: createId(todos.map(({ id }) => id)),
-      title: todoInput,
+      title: todo,
       isComplete: false,
       isEditing: false,
     };
     setTodos([...todos, newTodo]);
-    setTodoInput("");
   }
 
   function deleteTodo(id: number): void {
@@ -92,116 +92,55 @@ function App() {
     ]);
   }
 
-  function handleChange(event: any): void {
-    setTodoInput(event.target.value);
+  const [filter, setFilter] = useState("all");
+
+  function handleFilterChange(value: string): void {
+    setFilter(value);
+  }
+
+  function todosFiltered(): Array<any> {
+    if (filter === "active") {
+      return todos.filter((todo: any) => !todo.isComplete);
+    }
+    if (filter === "completed") {
+      return todos.filter((todo: any) => todo.isComplete);
+    }
+    return todos;
   }
 
   return (
     <div className="min-height-screen bg-gray-100 p-3">
-      <div className="todo-app mx-auto my-auto mt-8 p-4 bg-white text-gray-800 max-w-lg rounded shadow-md">
+      <div className="mx-auto my-auto mt-8 p-4 bg-white text-gray-800 max-w-lg rounded shadow-md">
         <h2 className="text-lg font-bold">Todo App</h2>
-        <form onSubmit={addTodo}>
-          <input
-            type="text"
-            className="w-full shadow-sm rounded mt-4 p-3"
-            placeholder="What do you need to do?"
-            value={todoInput}
-            onChange={handleChange}
-          />
-        </form>
-
-        <ul className="mt-8">
-          {todos.map((todo) => (
-            <li
-              className="flex justify-between items-center mt-6"
-              key={todo.id}
-            >
-              <div className="flex flex-1 items-center text-lg mr-6">
-                <input
-                  type="checkbox"
-                  checked={todo.isComplete}
-                  onChange={() => completeTodo(todo.id)}
-                />
-                {!todo.isEditing && (
-                  <span
-                    onDoubleClick={() => markAsEditing(todo.id)}
-                    className={`ml-4 ${
-                      todo.isComplete ? "line-through" : null
-                    }`}
-                  >
-                    {todo.title}
-                  </span>
-                )}
-
-                {todo.isEditing && (
-                  <input
-                    type="text"
-                    className="ml-2 w-full py-1 px-2 text-lg shadow-sm rounded"
-                    autoFocus
-                    defaultValue={todo.title}
-                    onBlur={(event) => updateTodo(event, todo.id)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        updateTodo(event, todo.id);
-                      }
-                      if (event.key === "Escape") {
-                        markAsEditing(todo.id);
-                      }
-                    }}
-                  />
+        <TodoForm addTodo={addTodo} />
+        {todos.length > 0 ? (
+          <>
+            <TodoList
+              todos={todosFiltered}
+              deleteTodo={deleteTodo}
+              updateTodo={updateTodo}
+              completeTodo={completeTodo}
+              markAsEditing={markAsEditing}
+            />
+            <div className="flex justify-between items-center text-gray-800 mt-6 pt-4 border-solid border-t border-gray-300">
+              <div className="flex flex-col space-y-2">
+                {todos.length !== 0 && (
+                  <>
+                    <CheckAllTodos checkAll={checkAll} />
+                    <UncheckAllTodos uncheckAll={uncheckAll} />
+                  </>
                 )}
               </div>
-              <button
-                onClick={() => deleteTodo(todo.id)}
-                className="bg-white text-gray-600 hover:text-gray-900 cursor-pointer border-0"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        <div className="flex justify-between items-center text-gray-800 mt-6 pt-4 border-solid border-t border-gray-300">
-          {todos.length !== 0 && (
-            <div className="flex flex-col space-y-2">
-              <button className="btn-neutral" onClick={checkAll}>
-                Check All
-              </button>
-              <button className="btn-neutral" onClick={uncheckAll}>
-                Uncheck All
-              </button>
+              <TodoRemaining todos={todos} />
             </div>
-          )}
-
-          <span>
-            {todos.length} {todos.length === 1 ? "item" : "items"} remaining
-          </span>
-        </div>
-
-        <div className="flex justify-between items-center mt-6 pt-4 border-solid border-t border-gray-300">
-          <div>
-            <button className="btn-neutral">All</button>
-            <button className="btn-neutral border-0">Active</button>
-            <button className="btn-neutral border-0">Completed</button>
-          </div>
-          <div>
-            <button className="btn-neutral" onClick={clearCompleted}>
-              Clear completed
-            </button>
-          </div>
-        </div>
+            <div className="flex justify-between items-center mt-6 pt-4 border-solid border-t border-gray-300">
+              <TodoFilters filter={filter} onChange={handleFilterChange} />
+              <ClearCompletedTodos clearCompleted={clearCompleted} />
+            </div>
+          </>
+        ) : (
+          <NoTodos />
+        )}
       </div>
     </div>
   );
