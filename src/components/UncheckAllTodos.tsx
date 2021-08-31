@@ -1,13 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useContext } from "react";
+import { TodosContext } from "../context/TodosContext";
 
-UncheckAllTodos.propTypes = {
-  uncheckAll: PropTypes.func.isRequired,
-};
-
-function UncheckAllTodos(props: any) {
+function UncheckAllTodos() {
+  const { todos, setTodos } = useContext(TodosContext);
+  function uncheckAll(): void {
+    setTodos([
+      ...todos.map((todo: Todo) => {
+        todo.isComplete = false;
+        return todo;
+      }),
+    ]);
+  }
   return (
-    <button className="btn-neutral" onClick={props.uncheckAll}>
+    <button className="btn-neutral" onClick={uncheckAll}>
       Uncheck All
     </button>
   );

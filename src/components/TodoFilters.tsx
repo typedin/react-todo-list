@@ -1,42 +1,37 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { useContext } from "react";
+import { FiltersContext } from "../context/TodosContext";
 
-TodoFilters.propTypes = {
-  filter: PropTypes.string,
-  onChange: PropTypes.func,
-};
+function TodoFilters() {
+  const { filter, filters, setFilter } = useContext(FiltersContext);
 
-function TodoFilters(props: any) {
-  function handleChange(filter: string) {
-    props.onChange(filter);
-  }
-  const buttonValues = [
-    {
-      text: "All",
-      filter: "all",
-    },
-    {
-      text: "Active",
-      filter: "active",
-    },
-    {
-      text: "Completed",
-      filter: "completed",
-    },
-  ];
+  const handleChange = function (value: string) {
+    setFilter(value);
+  };
+
   return (
     <>
       <div className="space-x-1">
-        {buttonValues.map(({ text, filter }) => (
-          <button
-            onClick={() => handleChange(filter)}
-            className={`btn-neutral ${
-              props.filter === filter ? null : "border-transparent"
-            }`}
-          >
-            {text}
-          </button>
-        ))}
+        {filters.map(
+          ({
+            id,
+            text,
+            filterValue,
+          }: {
+            id: number;
+            text: string;
+            filterValue: string;
+          }): JSX.Element => (
+            <button
+              key={id}
+              onClick={() => handleChange(filterValue)}
+              className={`btn-neutral ${
+                filter === filterValue ? null : "border-transparent"
+              }`}
+            >
+              {text}
+            </button>
+          )
+        )}
       </div>
     </>
   );
