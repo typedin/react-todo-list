@@ -21,3 +21,8 @@
   }
 }
 
+@layer utilities {
+  .active {
+    font-weight: bold;
+  }
+}

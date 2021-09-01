@@ -5,3 +5,14 @@ interface Todo {
   isComplete: boolean;
   isEditing: boolean;
 }
+
+type BlogParams = {
+  id: string;
+};
+
+interface Route {
+  path: string;
+  name: string;
+  exact: boolean;
+  component: JSX.Element;
+}
